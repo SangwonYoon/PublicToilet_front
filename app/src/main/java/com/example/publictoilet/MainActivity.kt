@@ -2,10 +2,12 @@ package com.example.publictoilet
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -23,6 +25,12 @@ import net.daum.mf.map.api.MapView
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
+// TODO 공중화장실 찾기 / 검색 결과 -> 2개의 탭을 가진 BottomSheetFragment 구현
+// TODO 공중화장실 찾기 탭에서는 검색 범위 (Spinner로 구현) 설정 후 검색할 수 있게 구현
+// TODO BottomSheetFragment 올라오면 지도는 중심 위치 유지하면서 작아지게 구현
+// TODO 검색하면 지도에 검색 반경 및 검색 반경 내 공중 화장실 표시
+// TODO 검색 결과 탭을 누르면 RecyclerView에 가까운 거리 순으로 공중화장실 정렬
+// TODO RecyclerView의 item 클릭 시 지도에서는 화장실 위치 표시, BottomSheetFragment에서는 화장실 정보(별점, 코멘트 등) 표시
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,14 +42,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        checkPermission()
-
         val mapView = initMapView()
+        setMapCenter(mapView)
 
         val myHome = makeMarker(37.6106656, 127.0064049, 0, "my Home")
         mapView.addPOIItem(myHome)
     }
 
+    /**
+     * 화면에 지도를 띄우는 함수
+     */
     private fun initMapView() : MapView{
         val mapView = MapView(this)
 
@@ -49,6 +59,23 @@ class MainActivity : AppCompatActivity() {
         mapViewContainer.addView(mapView)
 
         return mapView
+    }
+
+    /**
+     * 지도의 중심을 현재 위치로 이동
+     */
+    private fun setMapCenter(mapView : MapView){
+        checkPermission()
+        val locationManager : LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locCurrent = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        if(locCurrent != null) {
+            mapView.setMapCenterPoint(
+                MapPoint.mapPointWithGeoCoord(
+                    locCurrent.latitude,
+                    locCurrent.longitude
+                ), true
+            )
+        }
     }
 
     /**
