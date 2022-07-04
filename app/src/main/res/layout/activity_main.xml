@@ -11,4 +11,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <SlidingDrawer
+        android:id="@+id/search_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:allowSingleTap="true"
+        android:animateOnClick="true"
+        android:bottomOffset="5dp"
+        android:content="@id/search_drawer_content"
+        android:handle="@id/search_drawer_handle"
+        android:orientation="vertical"
+        android:topOffset="60dp">
+
+        <ImageView
+            android:id="@+id/search_drawer_handle"
+            android:src=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RelativeLayout
+            android:id="@+id/search_drawer_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabs"
+                android:elevation="3dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:tabGravity="fill"
+                app:tabTextColor="@color/black"
+                app:tabSelectedTextColor="@color/teal_200"/>
+
+            <FrameLayout
+                android:id="@+id/container"
+                android:layout_below="@id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
+
+    </SlidingDrawer>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

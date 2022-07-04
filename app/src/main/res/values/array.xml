@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="range">
+        <item>300m</item>
+        <item>500m</item>
+        <item>1km</item>
+        <item>3km</item>
+    </string-array>
+
+</resources>
