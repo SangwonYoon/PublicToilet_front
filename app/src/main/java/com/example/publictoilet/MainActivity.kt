@@ -14,11 +14,13 @@ import android.provider.Settings
 import android.util.Base64
 import android.util.Log
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.material.tabs.TabLayout
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -38,6 +40,18 @@ class MainActivity : AppCompatActivity() {
         findViewById(R.id.map_view)
     }
 
+    private val tabs : TabLayout by lazy{
+        findViewById(R.id.tabs)
+    }
+
+    private val container : FrameLayout by lazy{
+        findViewById(R.id.container)
+    }
+
+    private val searchToiletFragment = SearchToiletFragment()
+
+    private val resultFragment = ResultFragment()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -47,6 +61,8 @@ class MainActivity : AppCompatActivity() {
 
         val myHome = makeMarker(37.6106656, 127.0064049, 0, "my Home")
         mapView.addPOIItem(myHome)
+
+        initSlidingDrawer()
     }
 
     /**
@@ -140,6 +156,29 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun initSlidingDrawer(){
+        tabs.addTab(tabs.newTab().setText("화장실 위치 검색"))
+        tabs.addTab(tabs.newTab().setText("검색 결과"))
+
+        supportFragmentManager.beginTransaction().add(R.id.container, searchToiletFragment).commit()
+
+        tabs.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                val position = tab.position
+                var selected = if (position == 0) searchToiletFragment
+                else resultFragment
+                supportFragmentManager.beginTransaction().replace(R.id.container, selected).commit()
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+
+            }
+            override fun onTabReselected(tab: TabLayout.Tab) {
+
+            }
+        })
     }
 
     companion object{

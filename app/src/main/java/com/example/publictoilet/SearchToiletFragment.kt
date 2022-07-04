@@ -26,21 +26,16 @@ class SearchToiletFragment : Fragment() {
 
         spinner.adapter = adapter
 
-        /*
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                when(position){
-                    0 ->
-                }
+        searchButton.setOnClickListener {
+            val range = when(spinner.selectedItem.toString()){
+                "300m" -> 300
+                "500m" -> 500
+                "1km" -> 1000
+                else -> 3000
             }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                TODO("Not yet implemented")
-            }
-
+            //TODO 화장실 검색 API 호출
         }
-
-         */
 
         return view
     }

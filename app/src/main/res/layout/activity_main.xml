@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:allowSingleTap="true"
         android:animateOnClick="true"
-        android:bottomOffset="5dp"
+        android:bottomOffset="-10dp"
         android:content="@id/search_drawer_content"
         android:handle="@id/search_drawer_handle"
         android:orientation="vertical"
@@ -25,30 +25,32 @@
 
         <ImageView
             android:id="@+id/search_drawer_handle"
-            android:src=""
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_baseline_search_24"/>
 
         <RelativeLayout
             android:id="@+id/search_drawer_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="300dp"
             android:orientation="vertical">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabs"
-                android:elevation="3dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:elevation="3dp"
                 app:tabGravity="fill"
-                app:tabTextColor="@color/black"
-                app:tabSelectedTextColor="@color/teal_200"/>
+                app:tabSelectedTextColor="@color/teal_200"
+                app:tabTextColor="@color/black"/>
 
             <FrameLayout
                 android:id="@+id/container"
-                android:layout_below="@id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:layout_below="@id/tabs"
+                android:background="@color/black"/>
 
         </RelativeLayout>
 
