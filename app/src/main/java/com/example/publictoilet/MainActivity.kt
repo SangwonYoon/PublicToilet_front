@@ -16,14 +16,19 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Base64
 import android.util.Log
+import android.view.ContextMenu
+import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.google.android.material.tabs.TabLayout
 import net.daum.mf.map.api.MapCircle
 import net.daum.mf.map.api.MapPOIItem
@@ -36,8 +41,10 @@ import java.security.NoSuchAlgorithmException
 // 공중화장실 찾기 / 검색 결과 -> 2개의 탭을 가진 sliding drawer 구현
 // TODO sliding drawer 높이 조절
 // 공중화장실 찾기 탭에서는 검색 범위 (Spinner로 구현) 설정 후 검색할 수 있게 구현
+// 지도상에 검색 범위 표시
+// TODO 모드 선택 기능 (자유시점 모드, 트래킹 모드, 나침반 모드)
 // TODO BottomSheetFragment 올라오면 지도는 중심 위치 유지하면서 작아지게 구현
-// TODO 검색하면 지도에 검색 반경 및 검색 반경 내 공중 화장실 표시
+// TODO 검색하면 지도에 검색 반경 내 공중 화장실 표시
 // TODO 검색 결과 탭을 누르면 RecyclerView에 가까운 거리 순으로 공중화장실 정렬
 // TODO RecyclerView의 item 클릭 시 지도에서는 화장실 위치 표시, BottomSheetFragment에서는 화장실 정보(별점, 코멘트 등) 표시
 
@@ -45,6 +52,10 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
     private val mapView : MapView by lazy{
         initMapView()
+    }
+
+    private val changeModeButton : ImageButton by lazy{
+        findViewById(R.id.change_mode_button)
     }
 
     private val currentLocationButton : Button by lazy{
@@ -75,12 +86,12 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
         setMapCenter()
 
-        initCurrentLocationButton()
+        initButtons()
 
         val myHome = makeMarker(37.6106656, 127.0064049, 0, "my Home")
         mapView.addPOIItem(myHome)
 
-        startTracking()
+        startCompassMode()
 
         initSlidingDrawer()
     }
@@ -92,6 +103,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
     /**
      * 화장실 위치 검색 탭의 spinner에서 선택된 검색 범위에 따라 지도상에 검색 범위를 원으로 그려주는 함수
+     * SearchToiletFragment class의 onDataPass 메소드를 override
      */
     @SuppressLint("MissingPermission")
     override fun onDataPass(range: Int) {
@@ -111,10 +123,34 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
         mapView.addCircle(searchRange)
     }
 
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.mode, menu)
+        super.onCreateContextMenu(menu, v, menuInfo)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.free_mode -> stopTracking()
+            R.id.tracking_mode -> startTrackingMode()
+            R.id.compass_mode -> startCompassMode()
+        }
+        return super.onContextItemSelected(item)
+    }
+
     /**
      * 현 위치로 이동하는 버튼 세팅하는 함수
      */
-    fun initCurrentLocationButton(){
+    fun initButtons(){
+        changeModeButton.setOnClickListener{
+            this.registerForContextMenu(it)
+            openContextMenu(it)
+            unregisterForContextMenu(it)
+        }
         currentLocationButton.setOnClickListener {
             setMapCenter()
         }
@@ -216,16 +252,27 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
     /**
      * Tracking mode를 시작시키는 함수
      */
-    @SuppressLint("MissingPermission")
-    fun startTracking(){
-        mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading // 트래킹 모드와 나침반 모드(단말의 방향에 따라 지도 회전) On
+    fun startTrackingMode(){
+        mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading // 트래킹 모드 On
+        currentLocationButton.isVisible = false // 현 위치 버튼 안보이게  
     }
+
+    /**
+     * Compass mode를 시작시키는 함수
+     */
+    fun startCompassMode(){
+        mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading // 트래킹 모드와 나침반 모드(단말의 방향에 따라 지도 회전) On
+        currentLocationButton.isVisible = false // 현 위치 버튼 안보이게
+    }
+
+
 
     /**
      * Tracking mode를 종료시키는 함수
      */
     fun stopTracking(){
-        mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOff
+        mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOff // 트래킹 모드 Off
+        currentLocationButton.isVisible = true // 현 위치 버튼 보이게
     }
 
     /**
