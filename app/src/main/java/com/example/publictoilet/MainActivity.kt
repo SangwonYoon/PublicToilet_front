@@ -8,6 +8,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.tabs.TabLayout
+import net.daum.mf.map.api.MapCircle
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -31,14 +33,15 @@ import java.lang.Exception
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
-// TODO 공중화장실 찾기 / 검색 결과 -> 2개의 탭을 가진 BottomSheetFragment 구현
-// TODO 공중화장실 찾기 탭에서는 검색 범위 (Spinner로 구현) 설정 후 검색할 수 있게 구현
+// 공중화장실 찾기 / 검색 결과 -> 2개의 탭을 가진 sliding drawer 구현
+// TODO sliding drawer 높이 조절
+// 공중화장실 찾기 탭에서는 검색 범위 (Spinner로 구현) 설정 후 검색할 수 있게 구현
 // TODO BottomSheetFragment 올라오면 지도는 중심 위치 유지하면서 작아지게 구현
 // TODO 검색하면 지도에 검색 반경 및 검색 반경 내 공중 화장실 표시
 // TODO 검색 결과 탭을 누르면 RecyclerView에 가까운 거리 순으로 공중화장실 정렬
 // TODO RecyclerView의 item 클릭 시 지도에서는 화장실 위치 표시, BottomSheetFragment에서는 화장실 정보(별점, 코멘트 등) 표시
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListener {
 
     private val mapView : MapView by lazy{
         initMapView()
@@ -85,6 +88,27 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         stopTracking()
+    }
+
+    /**
+     * 화장실 위치 검색 탭의 spinner에서 선택된 검색 범위에 따라 지도상에 검색 범위를 원으로 그려주는 함수
+     */
+    @SuppressLint("MissingPermission")
+    override fun onDataPass(range: Int) {
+        mapView.removeAllCircles() // 이전 검색 범위 삭제
+
+        val locationManager : LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val currentLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        val searchRange = MapCircle( // 지도에 원으로 표시할 검색 범위
+            MapPoint.mapPointWithGeoCoord(
+                currentLoc!!.latitude,
+                currentLoc!!.longitude
+            ), // 원의 중심
+            range, // 반지름
+            Color.argb(128,0,0,0), // 테두리 색깔
+            Color.argb(128, 211, 211, 211) // 내부 색깔
+        )
+        mapView.addCircle(searchRange)
     }
 
     /**

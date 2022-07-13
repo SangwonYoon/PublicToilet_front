@@ -11,13 +11,26 @@ import android.widget.Button
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
 
-class SearchToiletFragment : Fragment() {
+class SearchToiletFragment() : Fragment() {
+
+    interface OnDataPassListener{
+        fun onDataPass(range: Int)
+    }
+
+    private lateinit var dataPassListener: OnDataPassListener
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        dataPassListener = context as OnDataPassListener
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.search_toilet_tab, container, false)
+        view.isClickable = true // FrameLayout에서 뒷 화면 터치 방지
         val spinner = view.findViewById<Spinner>(R.id.spinner)
         val searchButton = view.findViewById<Button>(R.id.search_button)
 
@@ -25,6 +38,21 @@ class SearchToiletFragment : Fragment() {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, items)
 
         spinner.adapter = adapter
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
+                when(pos){
+                    0 -> dataPassListener.onDataPass(300)
+                    1 -> dataPassListener.onDataPass(500)
+                    2 -> dataPassListener.onDataPass(1000)
+                    3 -> dataPassListener.onDataPass(3000)
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                //
+            }
+        }
 
         searchButton.setOnClickListener {
             val range = when(spinner.selectedItem.toString()){

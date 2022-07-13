@@ -13,6 +13,7 @@ class ResultFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.result_tab, container, false)
+        view.isClickable = true // FrameLayout에서 뒷 화면 터치 방지
 
         //TODO Recycler View adapter
 
