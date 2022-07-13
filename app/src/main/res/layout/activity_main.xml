@@ -11,6 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <Button
+        android:id="@+id/current_location_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="현 위치로"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <SlidingDrawer
         android:id="@+id/search_drawer"
         android:layout_width="match_parent"

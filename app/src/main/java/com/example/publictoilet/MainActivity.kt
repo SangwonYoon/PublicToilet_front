@@ -1,12 +1,14 @@
 package com.example.publictoilet
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
@@ -14,6 +16,7 @@ import android.provider.Settings
 import android.util.Base64
 import android.util.Log
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.NonNull
@@ -24,6 +27,7 @@ import com.google.android.material.tabs.TabLayout
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
+import java.lang.Exception
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -35,6 +39,14 @@ import java.security.NoSuchAlgorithmException
 // TODO RecyclerView의 item 클릭 시 지도에서는 화장실 위치 표시, BottomSheetFragment에서는 화장실 정보(별점, 코멘트 등) 표시
 
 class MainActivity : AppCompatActivity() {
+
+    private val mapView : MapView by lazy{
+        initMapView()
+    }
+
+    private val currentLocationButton : Button by lazy{
+        findViewById(R.id.current_location_button)
+    }
 
     private val mapContainer : ViewGroup by lazy{
         findViewById(R.id.map_view)
@@ -56,13 +68,32 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val mapView = initMapView()
-        setMapCenter(mapView)
+        checkPermission()
+
+        setMapCenter()
+
+        initCurrentLocationButton()
 
         val myHome = makeMarker(37.6106656, 127.0064049, 0, "my Home")
         mapView.addPOIItem(myHome)
 
+        startTracking()
+
         initSlidingDrawer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopTracking()
+    }
+
+    /**
+     * 현 위치로 이동하는 버튼 세팅하는 함수
+     */
+    fun initCurrentLocationButton(){
+        currentLocationButton.setOnClickListener {
+            setMapCenter()
+        }
     }
 
     /**
@@ -80,15 +111,15 @@ class MainActivity : AppCompatActivity() {
     /**
      * 지도의 중심을 현재 위치로 이동
      */
-    private fun setMapCenter(mapView : MapView){
-        checkPermission()
+    @SuppressLint("MissingPermission")
+    private fun setMapCenter(){
         val locationManager : LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val locCurrent = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-        if(locCurrent != null) {
+        val currentLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        if(currentLoc != null) {
             mapView.setMapCenterPoint(
                 MapPoint.mapPointWithGeoCoord(
-                    locCurrent.latitude,
-                    locCurrent.longitude
+                    currentLoc.latitude,
+                    currentLoc.longitude
                 ), true
             )
         }
@@ -158,6 +189,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Tracking mode를 시작시키는 함수
+     */
+    @SuppressLint("MissingPermission")
+    fun startTracking(){
+        mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading // 트래킹 모드와 나침반 모드(단말의 방향에 따라 지도 회전) On
+    }
+
+    /**
+     * Tracking mode를 종료시키는 함수
+     */
+    fun stopTracking(){
+        mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOff
+    }
+
+    /**
+     * sliding drawer를 세팅하는 함수
+     */
     private fun initSlidingDrawer(){
         tabs.addTab(tabs.newTab().setText("화장실 위치 검색"))
         tabs.addTab(tabs.newTab().setText("검색 결과"))
