@@ -42,7 +42,7 @@ import java.security.NoSuchAlgorithmException
 // TODO sliding drawer 높이 조절
 // 공중화장실 찾기 탭에서는 검색 범위 (Spinner로 구현) 설정 후 검색할 수 있게 구현
 // 지도상에 검색 범위 표시
-// TODO 모드 선택 기능 (자유시점 모드, 트래킹 모드, 나침반 모드)
+// 모드 선택 기능 (자유시점 모드, 트래킹 모드, 나침반 모드)
 // TODO BottomSheetFragment 올라오면 지도는 중심 위치 유지하면서 작아지게 구현
 // TODO 검색하면 지도에 검색 반경 내 공중 화장실 표시
 // TODO 검색 결과 탭을 누르면 RecyclerView에 가까운 거리 순으로 공중화장실 정렬
@@ -107,6 +107,10 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
      */
     @SuppressLint("MissingPermission")
     override fun onDataPass(range: Int) {
+//        mapView.setCurrentLocationRadius(range)
+//        mapView.setCurrentLocationRadiusStrokeColor(Color.argb(128,0,0,0))
+//        mapView.setCurrentLocationRadiusFillColor(Color.argb(128, 211, 211, 211))
+
         mapView.removeAllCircles() // 이전 검색 범위 삭제
 
         val locationManager : LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -273,6 +277,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
     fun stopTracking(){
         mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOff // 트래킹 모드 Off
         currentLocationButton.isVisible = true // 현 위치 버튼 보이게
+        //mapView.setShowCurrentLocationMarker(false) // 현 위치 마커 제거
     }
 
     /**
