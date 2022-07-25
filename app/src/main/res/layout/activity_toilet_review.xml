@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/toilet_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="솔샘 화장실" />
+
+    <ImageView
+        android:id="@+id/star1"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/inactive_star_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toilet_name" />
+
+    <ImageView
+        android:id="@+id/star2"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/inactive_star_icon"
+        app:layout_constraintStart_toEndOf="@id/star1"
+        app:layout_constraintTop_toBottomOf="@id/toilet_name" />
+
+    <ImageView
+        android:id="@+id/star3"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/inactive_star_icon"
+        app:layout_constraintStart_toEndOf="@id/star2"
+        app:layout_constraintTop_toBottomOf="@id/toilet_name" />
+
+    <ImageView
+        android:id="@+id/star4"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/inactive_star_icon"
+        app:layout_constraintStart_toEndOf="@id/star3"
+        app:layout_constraintTop_toBottomOf="@id/toilet_name" />
+
+    <ImageView
+        android:id="@+id/star5"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/inactive_star_icon"
+        app:layout_constraintStart_toEndOf="@id/star4"
+        app:layout_constraintTop_toBottomOf="@id/toilet_name" />
+
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="40dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/star5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/star5"
+        tools:text="평점 : 5.0" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/toilet_review_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toTopOf="@id/rating_star1"
+        app:layout_constraintHeight="true"
+        app:layout_constraintTop_toBottomOf="@id/star1"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/rating_star1"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="40dp"
+        android:src="@drawable/inactive_star_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rate_spinner"
+        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"/>
+
+    <ImageView
+        android:id="@+id/rating_star2"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/inactive_star_icon"
+        app:layout_constraintStart_toEndOf="@id/star1"
+        app:layout_constraintTop_toTopOf="@id/rate_spinner"
+        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"/>
+
+    <ImageView
+        android:id="@+id/rating_star3"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/inactive_star_icon"
+        app:layout_constraintStart_toEndOf="@id/star2"
+        app:layout_constraintTop_toTopOf="@id/rate_spinner"
+        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"/>
+
+    <ImageView
+        android:id="@+id/rating_star4"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/inactive_star_icon"
+        app:layout_constraintStart_toEndOf="@id/star3"
+        app:layout_constraintTop_toTopOf="@id/rate_spinner"
+        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"/>
+
+    <ImageView
+        android:id="@+id/rating_star5"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/inactive_star_icon"
+        app:layout_constraintStart_toEndOf="@id/star4"
+        app:layout_constraintTop_toTopOf="@id/rate_spinner"
+        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"/>
+
+    <Spinner
+        android:id="@+id/rate_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="60dp"
+        app:layout_constraintBottom_toTopOf="@id/edit_review"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_review"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="코멘트 남기기 (20자 이내)"
+        android:paddingStart="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/post_button" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/post_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="게시"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
