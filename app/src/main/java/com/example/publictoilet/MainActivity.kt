@@ -49,8 +49,8 @@ import java.security.NoSuchAlgorithmException
 // 지도상에 검색 범위 표시
 // 모드 선택 기능 (자유시점 모드, 트래킹 모드, 나침반 모드)
 // TODO BottomSheetFragment 올라오면 지도는 중심 위치 유지하면서 작아지게 구현
-// TODO 검색하면 지도에 검색 반경 내 공중 화장실 표시
-// TODO 검색 결과 탭을 누르면 RecyclerView에 가까운 거리 순으로 공중화장실 정렬
+// 검색하면 지도에 검색 반경 내 공중 화장실 표시
+// 검색 결과 탭을 누르면 RecyclerView에 가까운 거리 순으로 공중화장실 정렬
 // TODO RecyclerView의 item 클릭 시 지도에서는 화장실 위치 표시, BottomSheetFragment에서는 화장실 정보(별점, 코멘트 등) 표시
 
 class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListener {
@@ -162,15 +162,51 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
                     mapView.removeAllPOIItems() // 지도 화면에 있는 모든 POI(마커)를 제거한다.
 
                     val jsonArray = JSONArray(response.body()!!.string())
+
+                    val bundle = Bundle()
+                    bundle.putInt("array size", jsonArray.length())
+
                     for(idx in 0 until jsonArray.length()){
                         val tempToilet = jsonArray[idx] as JSONObject
-                        val tempLatitude = tempToilet.getString("latitude") as Double
-                        val tempLongitude = tempToilet.getString("longitude") as Double
-                        val tempToiletName = tempToilet.getString("toiletName")
+                        val latitude = tempToilet.getString("latitude") as Double
+                        val longitude = tempToilet.getString("longitude") as Double
+                        val toiletName = tempToilet.getString("toiletName")
+                        val tel = tempToilet.getString("tel")
+                        val openTime = tempToilet.getString("openTime")
+                        val mw = tempToilet.getBoolean("mw")
+                        val m1 = tempToilet.getString("m1")
+                        val m2 = tempToilet.getString("m2")
+                        val m3 = tempToilet.getString("m3")
+                        val m4 = tempToilet.getString("m4")
+                        val m5 = tempToilet.getString("m5")
+                        val m6 = tempToilet.getString("m6")
+                        val w1 = tempToilet.getString("w1")
+                        val w2 = tempToilet.getString("w2")
+                        val w3 = tempToilet.getString("w3")
+                        val score_avg = tempToilet.getString("score_avg")
+                        val distance = tempToilet.getString("distance").toDouble().toInt().toString()
 
-                        val tempToiletMarker = makeMarker(tempLatitude, tempLongitude, idx, tempToiletName)
+                        val tempToiletMarker = makeMarker(latitude, longitude, idx, toiletName)
                         mapView.addPOIItem(tempToiletMarker)
+
+                        bundle.putString("toiletName_$idx", toiletName)
+                        bundle.putString("tel_$idx", tel)
+                        bundle.putString("openTime_$idx", openTime)
+                        bundle.putBoolean("mw_$idx", mw)
+                        bundle.putString("m1_$idx", m1)
+                        bundle.putString("m2_$idx", m2)
+                        bundle.putString("m3_$idx", m3)
+                        bundle.putString("m4_$idx", m4)
+                        bundle.putString("m5_$idx", m5)
+                        bundle.putString("m6_$idx", m6)
+                        bundle.putString("w1_$idx", w1)
+                        bundle.putString("w2_$idx", w2)
+                        bundle.putString("w3_$idx", w3)
+                        bundle.putString("score_avg_$idx", score_avg)
+                        bundle.putString("distance_$idx", distance)
                     }
+
+                    resultFragment.arguments = bundle
                 }
             }
         })
