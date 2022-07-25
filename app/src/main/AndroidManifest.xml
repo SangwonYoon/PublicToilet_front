@@ -20,7 +20,7 @@
         android:theme="@style/Theme.PublicToilet"
         tools:targetApi="31">
         <activity
-            android:name=".ToiletInfoActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,7 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".ToiletInfoActivity"/>
         <activity android:name=".ToiletReviewActivity"/>
         <meta-data android:name="com.kakao.sdk.AppKey" android:value="ee900d345a9eae9898a9adc3e4213062"/>
     </application>

@@ -14,7 +14,8 @@ import androidx.fragment.app.Fragment
 class SearchToiletFragment() : Fragment() {
 
     interface OnDataPassListener{
-        fun onDataPass(range: Int)
+        fun onRangeChanged(range: Int)
+        fun onRangePass(range: Int)
     }
 
     private lateinit var dataPassListener: OnDataPassListener
@@ -42,10 +43,10 @@ class SearchToiletFragment() : Fragment() {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
                 when(pos){
-                    0 -> dataPassListener.onDataPass(300)
-                    1 -> dataPassListener.onDataPass(500)
-                    2 -> dataPassListener.onDataPass(1000)
-                    3 -> dataPassListener.onDataPass(3000)
+                    0 -> dataPassListener.onRangeChanged(300)
+                    1 -> dataPassListener.onRangeChanged(500)
+                    2 -> dataPassListener.onRangeChanged(1000)
+                    3 -> dataPassListener.onRangeChanged(3000)
                 }
             }
 
@@ -55,14 +56,12 @@ class SearchToiletFragment() : Fragment() {
         }
 
         searchButton.setOnClickListener {
-            val range = when(spinner.selectedItem.toString()){
-                "300m" -> 300
-                "500m" -> 500
-                "1km" -> 1000
-                else -> 3000
+            when(spinner.selectedItem.toString()){
+                "300m" -> dataPassListener.onRangePass(300)
+                "500m" -> dataPassListener.onRangePass(500)
+                "1km" -> dataPassListener.onRangePass(1000)
+                else -> dataPassListener.onRangePass(3000)
             }
-
-            //TODO 화장실 검색 API 호출
         }
 
         return view

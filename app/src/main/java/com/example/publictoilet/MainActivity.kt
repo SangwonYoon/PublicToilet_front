@@ -26,6 +26,7 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -34,6 +35,10 @@ import net.daum.mf.map.api.MapCircle
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
+import okhttp3.*
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.IOException
 import java.lang.Exception
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -49,6 +54,8 @@ import java.security.NoSuchAlgorithmException
 // TODO RecyclerView의 item 클릭 시 지도에서는 화장실 위치 표시, BottomSheetFragment에서는 화장실 정보(별점, 코멘트 등) 표시
 
 class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListener {
+
+    private val client = OkHttpClient()
 
     private val mapView : MapView by lazy{
         initMapView()
@@ -76,6 +83,10 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
     private val searchToiletFragment = SearchToiletFragment()
 
+    private val searchButton : AppCompatButton by lazy{
+        findViewById(R.id.search_button)
+    }
+
     private val resultFragment = ResultFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,8 +99,8 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
         initButtons()
 
-        val myHome = makeMarker(37.6106656, 127.0064049, 0, "my Home")
-        mapView.addPOIItem(myHome)
+//        val myHome = makeMarker(37.6106656, 127.0064049, 0, "my Home")
+//        mapView.addPOIItem(myHome)
 
         startCompassMode()
 
@@ -106,7 +117,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
      * SearchToiletFragment class의 onDataPass 메소드를 override
      */
     @SuppressLint("MissingPermission")
-    override fun onDataPass(range: Int) {
+    override fun onRangeChanged(range: Int) {
 //        mapView.setCurrentLocationRadius(range)
 //        mapView.setCurrentLocationRadiusStrokeColor(Color.argb(128,0,0,0))
 //        mapView.setCurrentLocationRadiusFillColor(Color.argb(128, 211, 211, 211))
@@ -125,6 +136,44 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
             Color.argb(128, 211, 211, 211) // 내부 색깔
         )
         mapView.addCircle(searchRange)
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onRangePass(range: Int) {
+        //TODO 화장실 검색 API 호출
+        val locationManager : LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val currentLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+        val request = Request.Builder().addHeader("Content-Type","application/x-www-form-urlencoded").url("http://15.165.203.167:8080/toilets/search?latitude=${currentLoc!!.latitude}&longitude=${currentLoc!!.longitude}&range=$range").build()
+        client.newCall(request).enqueue(object: Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("connection error", "인터넷 연결 불안정")
+                runOnUiThread{
+                    Toast.makeText(
+                        this@MainActivity,
+                        "인터넷 연결이 불안정합니다. 다시 시도해주세요.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if(response.code() == 200){
+                    mapView.removeAllPOIItems() // 지도 화면에 있는 모든 POI(마커)를 제거한다.
+
+                    val jsonArray = JSONArray(response.body()!!.string())
+                    for(idx in 0 until jsonArray.length()){
+                        val tempToilet = jsonArray[idx] as JSONObject
+                        val tempLatitude = tempToilet.getString("latitude") as Double
+                        val tempLongitude = tempToilet.getString("longitude") as Double
+                        val tempToiletName = tempToilet.getString("toiletName")
+
+                        val tempToiletMarker = makeMarker(tempLatitude, tempLongitude, idx, tempToiletName)
+                        mapView.addPOIItem(tempToiletMarker)
+                    }
+                }
+            }
+        })
     }
 
     override fun onCreateContextMenu(
@@ -147,7 +196,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
     }
 
     /**
-     * 현 위치로 이동하는 버튼 세팅하는 함수
+     * 트래킹 모드를 바꾸는 버튼과 현 위치로 이동하는 버튼을 세팅하는 함수
      */
     fun initButtons(){
         changeModeButton.setOnClickListener{
