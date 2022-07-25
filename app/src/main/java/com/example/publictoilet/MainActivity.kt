@@ -51,8 +51,8 @@ import java.security.NoSuchAlgorithmException
 // TODO BottomSheetFragment 올라오면 지도는 중심 위치 유지하면서 작아지게 구현
 // 검색하면 지도에 검색 반경 내 공중 화장실 표시
 // 검색 결과 탭을 누르면 RecyclerView에 가까운 거리 순으로 공중화장실 정렬
-// 검색 결과 item 클릭 시 해당 마커를 중심으로 지도 이동
-// TODO 마커 클릭 시 해당 화장실 정보 화면으로 이동
+// 검색 결과 item 클릭 시 해당 마커를 중심으로 지도 이동 // TODO 줌인 기능도 추가
+// TODO 마커의 말풍선 클릭 시 해당 화장실 정보 화면으로 이동
 // TODO RecyclerView의 item 클릭 시 지도에서는 화장실 위치 표시, BottomSheetFragment에서는 화장실 정보(별점, 코멘트 등) 표시
 
 class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListener, SearchResultAdapter.OnItemClickedListener {
@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
         val locationManager : LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val currentLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
-        val request = Request.Builder().addHeader("Content-Type","application/x-www-form-urlencoded").url("http://15.165.203.167:8080/toilets/search?latitude=${currentLoc!!.latitude}&longitude=${currentLoc!!.longitude}&range=$range").build()
+        val request = Request.Builder().addHeader("Content-Type","application/x-www-form-urlencoded").url("http://15.165.203.167:8080/toilets/search?latitude=${/*currentLoc!!.latitude*/37.3130672}&longitude=${/*currentLoc!!.longitude*/127.0884511}&range=$range").build()
         client.newCall(request).enqueue(object: Callback {
             override fun onFailure(call: Call, e: IOException) {
                 Log.d("connection error", "인터넷 연결 불안정")
@@ -179,8 +179,8 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
                     for(idx in 0 until jsonArray.length()){
                         val tempToilet = jsonArray[idx] as JSONObject
-                        val latitude = tempToilet.getString("latitude") as Double
-                        val longitude = tempToilet.getString("longitude") as Double
+                        val latitude = tempToilet.getString("latitude").toDouble()
+                        val longitude = tempToilet.getString("longitude").toDouble()
                         val toiletName = tempToilet.getString("toiletName")
                         val tel = tempToilet.getString("tel")
                         val openTime = tempToilet.getString("openTime")
@@ -218,6 +218,8 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
                     }
 
                     resultFragment.arguments = bundle
+
+                    resultFragment.changeResult()
                 }
             }
         })

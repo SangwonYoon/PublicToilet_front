@@ -23,7 +23,7 @@ class SearchResultAdapter(val mContext: Context, val searchResultList : MutableL
 
         fun bind(toilet : Toilet, position: Int){
             toiletName.text = toilet.toiletName
-            distance.text = toilet.distance.toString()
+            distance.text = toilet.distance + "m"
         }
     }
 
