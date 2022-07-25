@@ -11,6 +11,12 @@ import org.w3c.dom.Text
 
 class SearchResultAdapter(val mContext: Context, val searchResultList : MutableList<Toilet>) : RecyclerView.Adapter<SearchResultAdapter.CustomViewHolder>() {
 
+    interface OnItemClickedListener{
+        fun onItemClicked(position : Int)
+    }
+
+    private val itemClickedListener = mContext as OnItemClickedListener
+
     class CustomViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         private val toiletName = itemView.findViewById<TextView>(R.id.toilet_name)
         private val distance = itemView.findViewById<TextView>(R.id.distance)
@@ -26,6 +32,8 @@ class SearchResultAdapter(val mContext: Context, val searchResultList : MutableL
         return CustomViewHolder(view).apply{
             itemView.setOnClickListener {
                 val curPos = adapterPosition
+                itemClickedListener.onItemClicked(curPos)
+                /*
                 val toilet = searchResultList[curPos]
                 // 누르면 화면 전환
                 val intent = Intent(mContext, ToiletInfoActivity::class.java)
@@ -45,6 +53,8 @@ class SearchResultAdapter(val mContext: Context, val searchResultList : MutableL
                 intent.putExtra("w3", toilet.w3)
 
                 mContext.startActivity(intent)
+
+                 */
             }
         }
     }

@@ -51,9 +51,11 @@ import java.security.NoSuchAlgorithmException
 // TODO BottomSheetFragment 올라오면 지도는 중심 위치 유지하면서 작아지게 구현
 // 검색하면 지도에 검색 반경 내 공중 화장실 표시
 // 검색 결과 탭을 누르면 RecyclerView에 가까운 거리 순으로 공중화장실 정렬
+// 검색 결과 item 클릭 시 해당 마커를 중심으로 지도 이동
+// TODO 마커 클릭 시 해당 화장실 정보 화면으로 이동
 // TODO RecyclerView의 item 클릭 시 지도에서는 화장실 위치 표시, BottomSheetFragment에서는 화장실 정보(별점, 코멘트 등) 표시
 
-class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListener {
+class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListener, SearchResultAdapter.OnItemClickedListener {
 
     private val client = OkHttpClient()
 
@@ -110,6 +112,15 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
     override fun onDestroy() {
         super.onDestroy()
         stopTracking()
+    }
+
+    /**
+     * 검색 결과 탭에서 사용자가 선택한 화장실의 위치를 중심으로 지도 이동
+     */
+    override fun onItemClicked(position: Int) {
+        val targetMarker = mapView.findPOIItemByTag(position)
+        val coordinate = targetMarker.mapPoint
+        mapView.setMapCenterPoint(coordinate, true)
     }
 
     /**
