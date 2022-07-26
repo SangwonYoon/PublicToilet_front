@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/map_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <ImageButton
         android:id="@+id/change_mode_button"
@@ -21,7 +21,7 @@
         android:padding="10dp"
         android:src="@drawable/ic_baseline_menu_24"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/current_location_button"
@@ -29,12 +29,13 @@
         android:layout_height="wrap_content"
         android:text="현 위치로"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <SlidingDrawer
         android:id="@+id/search_drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="100dp"
         android:allowSingleTap="true"
         android:animateOnClick="true"
         android:bottomOffset="-20dp"
@@ -48,7 +49,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="10dp"
-            android:src="@drawable/ic_baseline_search_24"/>
+            android:src="@drawable/ic_baseline_search_24" />
 
         <RelativeLayout
             android:id="@+id/search_drawer_content"
@@ -64,7 +65,7 @@
                 android:elevation="3dp"
                 app:tabGravity="fill"
                 app:tabSelectedTextColor="@color/teal_200"
-                app:tabTextColor="@color/black"/>
+                app:tabTextColor="@color/black" />
 
             <FrameLayout
                 android:id="@+id/container"

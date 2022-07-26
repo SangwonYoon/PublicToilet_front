@@ -50,6 +50,8 @@ import java.security.NoSuchAlgorithmException
 // 검색 결과 item 클릭 시 해당 마커를 중심으로 지도 이동 // TODO 줌인 기능도 추가 -> mapView.setZoomLevel()
 // 마커의 말풍선 클릭 시 해당 화장실 정보 화면으로 이동 -> getUserObject()로 해당 마커와 연관된 Toilet 객체 가져오기
 // 리뷰 작성 화면 기능 구현
+// TODO sliding drawer 높이 조절 -> sliding drawer에 marginTop 줘서 테스트해보기
+// TODO sliding drawer 디자인 커스텀하기
 
 class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListener, SearchResultAdapter.OnItemClickedListener {
 
@@ -437,7 +439,7 @@ class MarkerEventListener(val context: Context) : MapView.POIItemEventListener{
     }
 
     /**
-     * 말풍선 클릭 시 해당 화장실 정보 페이지로 전환
+     * 말풍선 클릭 시 해당 화장실 정보 페이지 전환
      */
     override fun onCalloutBalloonOfPOIItemTouched(
         mapView: MapView?,
