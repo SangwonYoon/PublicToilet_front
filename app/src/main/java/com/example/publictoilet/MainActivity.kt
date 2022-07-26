@@ -47,10 +47,10 @@ import java.security.NoSuchAlgorithmException
 // 모드 선택 기능 (자유시점 모드, 트래킹 모드, 나침반 모드)
 // 검색하면 지도에 검색 반경 내 공중 화장실 표시 // 검색 버튼 클릭 후 sliding drawer 닫히는 기능 추가 -> animateClose()
 // 검색 결과 탭을 누르면 RecyclerView에 가까운 거리 순으로 공중화장실 정렬
-// 검색 결과 item 클릭 시 해당 마커를 중심으로 지도 이동 // TODO 줌인 기능도 추가 -> mapView.setZoomLevel()
+// 검색 결과 item 클릭 시 해당 마커를 중심으로 지도 이동 // 줌인 기능도 추가 -> mapView.setZoomLevel() // TODO 마커 선택되도록
 // 마커의 말풍선 클릭 시 해당 화장실 정보 화면으로 이동 -> getUserObject()로 해당 마커와 연관된 Toilet 객체 가져오기
 // 리뷰 작성 화면 기능 구현
-// TODO sliding drawer 높이 조절 -> sliding drawer에 marginTop 줘서 테스트해보기
+// sliding drawer 높이 조절
 // TODO sliding drawer 디자인 커스텀하기
 
 class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListener, SearchResultAdapter.OnItemClickedListener {
@@ -89,6 +89,8 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
     private val resultFragment = ResultFragment()
 
+    private val markerEventListener = MarkerEventListener(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -119,7 +121,8 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
         val targetMarker = mapView.findPOIItemByTag(position)
         val coordinate = targetMarker.mapPoint
         mapView.setMapCenterPoint(coordinate, true)
-        searchDrawer.animateClose()
+        mapView.setZoomLevel(1,true)
+        //searchDrawer.animateClose()
     }
 
     /**
@@ -223,7 +226,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
                     resultFragment.arguments = bundle
                     resultFragment.changeResult()
-                    searchDrawer.animateClose()
+                    //searchDrawer.animateClose()
                 } else{
                     Log.d("connection error", "response code is not 200")
                     runOnUiThread{
@@ -276,7 +279,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
      */
     private fun initMapView() : MapView{
         val mapView = MapView(this)
-        mapView.setPOIItemEventListener(MarkerEventListener(this))
+        mapView.setPOIItemEventListener(markerEventListener)
 
         mapContainer.addView(mapView)
 
@@ -312,12 +315,8 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
         marker.itemName = tagName
         marker.tag = tagNo
         marker.mapPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude)
-        //marker.markerType = MapPOIItem.MarkerType.BluePin
-        //marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
-        marker.markerType = MapPOIItem.MarkerType.CustomImage
-        marker.customImageResourceId = R.drawable.inactive_toilet_icon
-        marker.selectedMarkerType = MapPOIItem.MarkerType.CustomImage
-        marker.customSelectedImageResourceId = R.drawable.active_toilet_icon
+        marker.markerType = MapPOIItem.MarkerType.BluePin
+        marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
 
         return marker
     }
