@@ -171,6 +171,10 @@ class ToiletInfoActivity : AppCompatActivity() {
         tel.text = "전화번호 : $telData"
     }
 
+    /**
+     * 평점 평균 값에 맞게 별 모양을 바꿔주는 함수
+     * @param score 평점 평균 값
+     */
     private fun initStars(score : String){
         for(i in 0 until score.toDouble().toInt()){
             stars[i].setImageResource(R.drawable.active_star_icon)

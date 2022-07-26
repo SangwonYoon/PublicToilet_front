@@ -33,6 +33,9 @@ class ResultFragment : Fragment() {
         return view
     }
 
+    /**
+     * 검색 탭에서 검색 버튼 클릭 후 검색 결과 탭의 결과를 바꿔주는 함수
+     */
     fun changeResult(){
         if(arguments != null){
             searchResultList = mutableListOf()

@@ -91,6 +91,9 @@ class ToiletReviewActivity : AppCompatActivity() {
         initPostButton(toiletId)
     }
 
+    /**
+     * Intent로 넘겨받은 데이터를 바탕으로 뷰를 초기화하는 함수
+     */
     private fun initView() : Int{
         val intent = intent
 
@@ -112,6 +115,11 @@ class ToiletReviewActivity : AppCompatActivity() {
         return id.toInt()
     }
 
+    /**
+     * 평점 평균 값에 맞게 별 모양을 바꿔주는 함수
+     * @param score 평점 평균 값
+     * @param stars 변경할 별 이미지들을 담고 있는 리스트
+     */
     private fun initStars(score : String, stars : MutableList<ImageView>){
         for(i in 0 until score.toDouble().toInt()){
             stars[i].setImageResource(R.drawable.active_star_icon)
@@ -121,6 +129,9 @@ class ToiletReviewActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Recycler View를 초기화하는 함수
+     */
     private fun initRecyclerView(){
         toiletReviewContainer.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         toiletReviewContainer.setHasFixedSize(true)
@@ -128,6 +139,10 @@ class ToiletReviewActivity : AppCompatActivity() {
         toiletReviewContainer.adapter = ReviewAdapter(this, reviewList)
     }
 
+    /**
+     * DB에서 현재 페이지의 화장실 리뷰들을 가져오는 함수
+     * @param toiletId 현재 페이지의 화장실 ID
+     */
     private fun getReviews(toiletId : Int){
         val getReviewRequest = Request.Builder().addHeader("Content-Type","application/x-www-form-urlencoded").url("http://15.165.203.167:8080/toilets/$toiletId/reviews").build()
         client.newCall(getReviewRequest).enqueue(object: Callback {
@@ -162,6 +177,9 @@ class ToiletReviewActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * spinner를 초기화하는 함수
+     */
     private fun initSpinner(){
         val items = resources.getStringArray(R.array.score)
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, items)
@@ -184,6 +202,9 @@ class ToiletReviewActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 리뷰 입력창을 초기화하는 함수
+     */
     private fun initInputReview(){
         inputReview.onFocusChangeListener = object : View.OnFocusChangeListener{
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
@@ -200,8 +221,11 @@ class ToiletReviewActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 게시 버튼을 초기화하는 함수
+     */
     private fun initPostButton(toiletId: Int){
-        postButton.isEnabled = false
+        postButton.isEnabled = false // 초기에는 버튼이 눌리지 않도록 설정
 
         postButton.setOnClickListener {
             val body = FormBody.Builder()

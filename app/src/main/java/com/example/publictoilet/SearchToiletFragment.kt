@@ -14,8 +14,8 @@ import androidx.fragment.app.Fragment
 class SearchToiletFragment() : Fragment() {
 
     interface OnDataPassListener{
-        fun onRangeChanged(range: Int)
-        fun onRangePass(range: Int)
+        fun onRangeChanged(range: Int) // spinner에서 값을 바꿀 때 MainActivity에 바뀐 값을 보내는 함수
+        fun onRangePass(range: Int) // 검색 버튼 누르면 spinner에 선택된 값을 MainActivity에 보내는 함수
     }
 
     private lateinit var dataPassListener: OnDataPassListener

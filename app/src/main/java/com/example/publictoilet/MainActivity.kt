@@ -274,9 +274,9 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
      */
     private fun initMapView() : MapView{
         val mapView = MapView(this)
+        mapView.setPOIItemEventListener(MarkerEventListener(this))
 
-        val mapViewContainer = mapContainer
-        mapViewContainer.addView(mapView)
+        mapContainer.addView(mapView)
 
         return mapView
     }
@@ -424,6 +424,9 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
     }
 }
 
+/**
+ * 마커 클릭 이벤트 리스너
+ */
 class MarkerEventListener(val context: Context) : MapView.POIItemEventListener{
     override fun onPOIItemSelected(p0: MapView?, p1: MapPOIItem?) {
         //
@@ -433,12 +436,14 @@ class MarkerEventListener(val context: Context) : MapView.POIItemEventListener{
         //
     }
 
+    /**
+     * 말풍선 클릭 시 해당 화장실 정보 페이지로 전환
+     */
     override fun onCalloutBalloonOfPOIItemTouched(
         mapView: MapView?,
         poiItem: MapPOIItem?,
         buttonType: MapPOIItem.CalloutBalloonButtonType?
     ) {
-        // TODO
         val toilet = poiItem?.userObject as Toilet
         val intent = Intent(context, ToiletInfoActivity::class.java)
         intent.putExtra("id", toilet.id)
