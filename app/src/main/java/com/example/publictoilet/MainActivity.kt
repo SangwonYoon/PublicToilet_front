@@ -52,6 +52,9 @@ import java.security.NoSuchAlgorithmException
 // 리뷰 작성 화면 기능 구현
 // sliding drawer 높이 조절
 // TODO sliding drawer 디자인 커스텀하기
+// 화장실 리뷰 화면 recycler view 안보이는 버그 수정
+// TODO 리뷰 등록 후 refresh
+// TODO 평점 소수점 한자리까지만 잘라서 보여주기
 
 class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListener, SearchResultAdapter.OnItemClickedListener {
 

@@ -3,6 +3,7 @@ package com.example.publictoilet
 import android.content.Intent
 import android.media.Image
 import android.os.Bundle
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,10 @@ class ToiletInfoActivity : AppCompatActivity() {
 
     private val toiletName : TextView by lazy{
         findViewById(R.id.toilet_name)
+    }
+
+    private val closeButton : ImageButton by lazy{
+        findViewById(R.id.close_button)
     }
 
     private val s1 :ImageView by lazy{
@@ -169,6 +174,10 @@ class ToiletInfoActivity : AppCompatActivity() {
         val telData = intent.getStringExtra("tel")
         tel.isVisible = (telData != "null")
         tel.text = "전화번호 : $telData"
+
+        closeButton.setOnClickListener {
+            finish()
+        }
     }
 
     /**

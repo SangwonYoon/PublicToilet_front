@@ -25,6 +25,10 @@ class ToiletReviewActivity : AppCompatActivity() {
         findViewById(R.id.toilet_name)
     }
 
+    private val closeButton : ImageButton by lazy{
+        findViewById(R.id.close_button)
+    }
+
     private val s1 : ImageView by lazy{
         findViewById(R.id.star1)
     }
@@ -88,7 +92,6 @@ class ToiletReviewActivity : AppCompatActivity() {
         setContentView(R.layout.activity_toilet_review)
 
         val toiletId = initView()
-        initRecyclerView()
         initSpinner()
         initInputReview()
         initPostButton(toiletId)
@@ -114,6 +117,10 @@ class ToiletReviewActivity : AppCompatActivity() {
         }
 
         getReviews(id!!.toInt())
+
+        closeButton.setOnClickListener {
+            finish()
+        }
 
         return id.toInt()
     }
@@ -178,6 +185,10 @@ class ToiletReviewActivity : AppCompatActivity() {
                         reviewList.add(review)
                     }
                     reviewList.reverse() // 최신 리뷰가 상단에 오도록 reverse
+                    Log.d("reviewList", reviewList.size.toString())
+                    runOnUiThread{
+                        initRecyclerView()
+                    }
                 }
             }
         })
@@ -234,12 +245,14 @@ class ToiletReviewActivity : AppCompatActivity() {
         postButton.isEnabled = false // 초기에는 버튼이 눌리지 않도록 설정
 
         postButton.setOnClickListener {
-            val body = FormBody.Builder()
-                .add("comment", inputReview.text.toString())
-                .add("score", spinner.selectedItem.toString())
-                .build()
+            val postData = "{\"comment\": \"${inputReview.text}\", \"score\" : \"${spinner.selectedItem}\"}"
+            Log.d("input review", inputReview.text.toString())
+            Log.d("spinner", spinner.selectedItem.toString())
+            Log.d("json", postData)
 
-            val postReviewRequest = Request.Builder().addHeader("Content-Type","application/x-www-form-urlencoded").url("http://15.165.203.167:8080/reviews/$toiletId").post(body).build()
+            val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), postData)
+
+            val postReviewRequest = Request.Builder().url("http://15.165.203.167:8080/reviews/$toiletId").post(body).build()
 
             client.newCall(postReviewRequest).enqueue(object : Callback{
                 override fun onFailure(call: Call, e: IOException) {
@@ -256,13 +269,15 @@ class ToiletReviewActivity : AppCompatActivity() {
                 override fun onResponse(call: Call, response: Response) {
                     if(response.code() == 200){
                         Log.d("post reivew", "success")
-                        Toast.makeText(
-                            this@ToiletReviewActivity,
-                            "리뷰가 성공적으로 등록되었습니다.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@ToiletReviewActivity,
+                                "리뷰가 성공적으로 등록되었습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     } else{
-                        Log.d("connection error", "toiletId : $toiletId / review post 도중 인터넷 연결 불안정")
+                        Log.d("connection error", "toiletId : $toiletId / response code : ${response.code()} / review post 도중 인터넷 연결 불안정")
                         runOnUiThread{
                             Toast.makeText(
                                 this@ToiletReviewActivity,

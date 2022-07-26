@@ -18,6 +18,17 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="솔샘 화장실" />
 
+    <ImageButton
+        android:id="@+id/close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/close_icon"
+        app:layout_constraintBottom_toBottomOf="@id/toilet_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/toilet_name"/>
+
     <ImageView
         android:id="@+id/star1"
         android:layout_width="30dp"
@@ -145,7 +156,10 @@
         android:id="@+id/input_review"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:hint="코멘트 남기기 (20자 이내)"
+        android:inputType="text"
+        android:maxLength="20"
         android:paddingStart="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/post_button"
@@ -155,6 +169,7 @@
         android:id="@+id/post_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/inactive_button_bg"
         android:text="게시"
         android:textColor="@color/black"
