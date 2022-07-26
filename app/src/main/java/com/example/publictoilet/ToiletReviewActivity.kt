@@ -168,7 +168,20 @@ class ToiletReviewActivity : AppCompatActivity() {
 
         spinner.adapter = adapter
 
-        initStars(spinner.selectedItem.toString(), mutableListOf(rs1, rs2, rs3, rs4, rs5))
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                initStars(spinner.selectedItem.toString(), mutableListOf(rs1, rs2, rs3, rs4, rs5))
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
     }
 
     private fun initInputReview(){
