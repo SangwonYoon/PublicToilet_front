@@ -92,69 +92,70 @@
         android:layout_height="30dp"
         android:layout_marginStart="40dp"
         android:src="@drawable/inactive_star_icon"
+        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/rate_spinner"
-        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"/>
+        app:layout_constraintTop_toTopOf="@id/rate_spinner" />
 
     <ImageView
         android:id="@+id/rating_star2"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/inactive_star_icon"
+        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"
         app:layout_constraintStart_toEndOf="@id/star1"
-        app:layout_constraintTop_toTopOf="@id/rate_spinner"
-        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"/>
+        app:layout_constraintTop_toTopOf="@id/rate_spinner" />
 
     <ImageView
         android:id="@+id/rating_star3"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/inactive_star_icon"
+        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"
         app:layout_constraintStart_toEndOf="@id/star2"
-        app:layout_constraintTop_toTopOf="@id/rate_spinner"
-        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"/>
+        app:layout_constraintTop_toTopOf="@id/rate_spinner" />
 
     <ImageView
         android:id="@+id/rating_star4"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/inactive_star_icon"
+        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"
         app:layout_constraintStart_toEndOf="@id/star3"
-        app:layout_constraintTop_toTopOf="@id/rate_spinner"
-        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"/>
+        app:layout_constraintTop_toTopOf="@id/rate_spinner" />
 
     <ImageView
         android:id="@+id/rating_star5"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/inactive_star_icon"
+        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"
         app:layout_constraintStart_toEndOf="@id/star4"
-        app:layout_constraintTop_toTopOf="@id/rate_spinner"
-        app:layout_constraintBottom_toBottomOf="@id/rate_spinner"/>
+        app:layout_constraintTop_toTopOf="@id/rate_spinner" />
 
     <Spinner
         android:id="@+id/rate_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="60dp"
-        app:layout_constraintBottom_toTopOf="@id/edit_review"
         android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/input_review"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
-        android:id="@+id/edit_review"
+        android:id="@+id/input_review"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="코멘트 남기기 (20자 이내)"
         android:paddingStart="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/post_button" />
+        app:layout_constraintEnd_toStartOf="@id/post_button"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/post_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/inactive_button_bg"
         android:text="게시"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"

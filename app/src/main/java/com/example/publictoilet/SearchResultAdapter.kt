@@ -21,7 +21,7 @@ class SearchResultAdapter(val mContext: Context, val searchResultList : MutableL
         private val toiletName = itemView.findViewById<TextView>(R.id.toilet_name)
         private val distance = itemView.findViewById<TextView>(R.id.distance)
 
-        fun bind(toilet : Toilet, position: Int){
+        fun bind(toilet : Toilet){
             toiletName.text = toilet.toiletName
             distance.text = toilet.distance + "m"
         }
@@ -62,7 +62,7 @@ class SearchResultAdapter(val mContext: Context, val searchResultList : MutableL
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         val toilet = searchResultList[position]
         holder.apply {
-            bind(toilet, position)
+            bind(toilet)
         }
     }
 

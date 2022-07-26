@@ -42,11 +42,9 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
 // 공중화장실 찾기 / 검색 결과 -> 2개의 탭을 가진 sliding drawer 구현
-// TODO sliding drawer 높이 조절
 // 공중화장실 찾기 탭에서는 검색 범위 (Spinner로 구현) 설정 후 검색할 수 있게 구현
 // 지도상에 검색 범위 표시
 // 모드 선택 기능 (자유시점 모드, 트래킹 모드, 나침반 모드)
-// TODO BottomSheetFragment 올라오면 지도는 중심 위치 유지하면서 작아지게 구현
 // 검색하면 지도에 검색 반경 내 공중 화장실 표시 // 검색 버튼 클릭 후 sliding drawer 닫히는 기능 추가 -> animateClose()
 // 검색 결과 탭을 누르면 RecyclerView에 가까운 거리 순으로 공중화장실 정렬
 // 검색 결과 item 클릭 시 해당 마커를 중심으로 지도 이동 // TODO 줌인 기능도 추가 -> mapView.setZoomLevel()
@@ -143,7 +141,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
         val searchRange = MapCircle( // 지도에 원으로 표시할 검색 범위
             MapPoint.mapPointWithGeoCoord(
                 currentLoc!!.latitude,
-                currentLoc!!.longitude
+                currentLoc.longitude
             ), // 원의 중심
             range, // 반지름
             Color.argb(128,0,0,0), // 테두리 색깔
@@ -228,6 +226,15 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
                     resultFragment.arguments = bundle
                     resultFragment.changeResult()
                     searchDrawer.animateClose()
+                } else{
+                    Log.d("connection error", "response code is not 200")
+                    runOnUiThread{
+                        Toast.makeText(
+                            this@MainActivity,
+                            "인터넷 연결이 불안정합니다. 다시 시도해주세요.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
         })

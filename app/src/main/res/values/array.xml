@@ -7,4 +7,16 @@
         <item>3km</item>
     </string-array>
 
+    <string-array name="score">
+        <item>5.0</item>
+        <item>4.5</item>
+        <item>4.0</item>
+        <item>3.5</item>
+        <item>3.0</item>
+        <item>2.5</item>
+        <item>2.0</item>
+        <item>1.5</item>
+        <item>1.0</item>
+    </string-array>
+
 </resources>
