@@ -1,9 +1,12 @@
 package com.example.publictoilet
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
@@ -123,6 +126,9 @@ class ToiletReviewActivity : AppCompatActivity() {
     private fun initStars(score : String, stars : MutableList<ImageView>){
         for(i in 0 until score.toDouble().toInt()){
             stars[i].setImageResource(R.drawable.active_star_icon)
+        }
+        for(i in score.toDouble().toInt() until 5){
+            stars[i].setImageResource(R.drawable.inactive_star_icon)
         }
         if(score.toDouble() > score.toDouble().toInt()){
             stars[score.toDouble().toInt()].setImageResource(R.drawable.half_star_icon)
@@ -256,7 +262,7 @@ class ToiletReviewActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                     } else{
-                        Log.d("connection error", "review post 도중 인터넷 연결 불안정")
+                        Log.d("connection error", "toiletId : $toiletId / review post 도중 인터넷 연결 불안정")
                         runOnUiThread{
                             Toast.makeText(
                                 this@ToiletReviewActivity,
@@ -268,5 +274,25 @@ class ToiletReviewActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+
+    /**
+     * 현재 포커스된 뷰의 영역이 아닌 다른 곳을 클릭 시 키보드를 내리고 포커스 해제
+     */
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        val focusView = currentFocus
+        if (focusView != null) {
+            val rect = Rect()
+            focusView.getGlobalVisibleRect(rect)
+            val x = ev.x.toInt()
+            val y = ev.y.toInt()
+            if (!rect.contains(x, y)) {
+                val imm: InputMethodManager =
+                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                if (imm != null) imm.hideSoftInputFromWindow(focusView.windowToken, 0)
+                focusView.clearFocus()
+            }
+        }
+        return super.dispatchTouchEvent(ev)
     }
 }
