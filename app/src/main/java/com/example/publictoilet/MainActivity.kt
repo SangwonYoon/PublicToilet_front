@@ -85,10 +85,6 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
     private val searchToiletFragment = SearchToiletFragment()
 
-    private val searchButton : AppCompatButton by lazy{
-        findViewById(R.id.search_button)
-    }
-
     private val resultFragment = ResultFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -314,8 +310,12 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
         marker.itemName = tagName
         marker.tag = tagNo
         marker.mapPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude)
-        marker.markerType = MapPOIItem.MarkerType.BluePin
-        marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
+        //marker.markerType = MapPOIItem.MarkerType.BluePin
+        //marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
+        marker.markerType = MapPOIItem.MarkerType.CustomImage
+        marker.customImageResourceId = R.drawable.inactive_toilet_icon
+        marker.selectedMarkerType = MapPOIItem.MarkerType.CustomImage
+        marker.customSelectedImageResourceId = R.drawable.active_toilet_icon
 
         return marker
     }

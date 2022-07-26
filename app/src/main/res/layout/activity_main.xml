@@ -45,8 +45,9 @@
 
         <ImageView
             android:id="@+id/search_drawer_handle"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="10dp"
             android:src="@drawable/ic_baseline_search_24"/>
 
         <RelativeLayout
