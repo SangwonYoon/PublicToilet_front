@@ -39,6 +39,7 @@ class ResultFragment : Fragment() {
             val numOfToilets = requireArguments().getInt("array size")
             Log.d("number", numOfToilets.toString())
             for(idx in 0 until numOfToilets){
+                val id = requireArguments().getString("id_$idx")
                 val toiletName = requireArguments().getString("toiletName_$idx")
                 val tel = requireArguments().getString("tel_$idx")
                 val openTime = requireArguments().getString("openTime_$idx")
@@ -55,7 +56,7 @@ class ResultFragment : Fragment() {
                 val distance = requireArguments().getString("distance_$idx")
                 val score_avg = requireArguments().getString("score_avg_$idx")
 
-                val toilet = Toilet(toiletName = toiletName!!, tel = tel!!, openTime = openTime!!, mw = mw, m1 = m1!!, m2 = m2!!, m3 = m3!!, m4 = m4!!, m5 = m5!!, m6 = m6!!, w1 = w1!!, w2 = w2!!, w3 = w3!!, distance = distance!!, score_avg = score_avg!!)
+                val toilet = Toilet(id = id!!, toiletName = toiletName!!, tel = tel!!, openTime = openTime!!, mw = mw, m1 = m1!!, m2 = m2!!, m3 = m3!!, m4 = m4!!, m5 = m5!!, m6 = m6!!, w1 = w1!!, w2 = w2!!, w3 = w3!!, distance = distance!!, score_avg = score_avg!!)
                 searchResultList.add(toilet)
             }
         }

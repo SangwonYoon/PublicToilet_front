@@ -20,15 +20,13 @@ import android.view.ContextMenu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.ImageButton
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isVisible
 import com.google.android.material.tabs.TabLayout
 import net.daum.mf.map.api.MapCircle
@@ -49,11 +47,11 @@ import java.security.NoSuchAlgorithmException
 // 지도상에 검색 범위 표시
 // 모드 선택 기능 (자유시점 모드, 트래킹 모드, 나침반 모드)
 // TODO BottomSheetFragment 올라오면 지도는 중심 위치 유지하면서 작아지게 구현
-// 검색하면 지도에 검색 반경 내 공중 화장실 표시
+// 검색하면 지도에 검색 반경 내 공중 화장실 표시 // 검색 버튼 클릭 후 sliding drawer 닫히는 기능 추가 -> animateClose()
 // 검색 결과 탭을 누르면 RecyclerView에 가까운 거리 순으로 공중화장실 정렬
-// 검색 결과 item 클릭 시 해당 마커를 중심으로 지도 이동 // TODO 줌인 기능도 추가
-// TODO 마커의 말풍선 클릭 시 해당 화장실 정보 화면으로 이동
-// TODO RecyclerView의 item 클릭 시 지도에서는 화장실 위치 표시, BottomSheetFragment에서는 화장실 정보(별점, 코멘트 등) 표시
+// 검색 결과 item 클릭 시 해당 마커를 중심으로 지도 이동 // TODO 줌인 기능도 추가 -> mapView.setZoomLevel()
+// 마커의 말풍선 클릭 시 해당 화장실 정보 화면으로 이동 -> getUserObject()로 해당 마커와 연관된 Toilet 객체 가져오기
+// TODO 리뷰 작성 화면 기능 구현
 
 class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListener, SearchResultAdapter.OnItemClickedListener {
 
@@ -73,6 +71,10 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
     private val mapContainer : ViewGroup by lazy{
         findViewById(R.id.map_view)
+    }
+
+    private val searchDrawer : SlidingDrawer by lazy{
+        findViewById(R.id.search_drawer)
     }
 
     private val tabs : TabLayout by lazy{
@@ -121,6 +123,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
         val targetMarker = mapView.findPOIItemByTag(position)
         val coordinate = targetMarker.mapPoint
         mapView.setMapCenterPoint(coordinate, true)
+        searchDrawer.animateClose()
     }
 
     /**
@@ -179,6 +182,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
                     for(idx in 0 until jsonArray.length()){
                         val tempToilet = jsonArray[idx] as JSONObject
+                        val id = tempToilet.getString("id")
                         val latitude = tempToilet.getString("latitude").toDouble()
                         val longitude = tempToilet.getString("longitude").toDouble()
                         val toiletName = tempToilet.getString("toiletName")
@@ -197,9 +201,13 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
                         val score_avg = tempToilet.getString("score_avg")
                         val distance = tempToilet.getString("distance").toDouble().toInt().toString()
 
+                        val toilet = Toilet(id = id, toiletName = toiletName, tel = tel, openTime = openTime, mw = mw, m1 = m1, m2 = m2, m3 = m3, m4 = m4, m5 = m5, m6 = m6, w1 = w1, w2 = w2, w3 = w3, distance = distance, score_avg = score_avg)
+
                         val tempToiletMarker = makeMarker(latitude, longitude, idx, toiletName)
+                        tempToiletMarker.userObject = toilet
                         mapView.addPOIItem(tempToiletMarker)
 
+                        bundle.putString("id_$idx", id)
                         bundle.putString("toiletName_$idx", toiletName)
                         bundle.putString("tel_$idx", tel)
                         bundle.putString("openTime_$idx", openTime)
@@ -218,8 +226,8 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
                     }
 
                     resultFragment.arguments = bundle
-
                     resultFragment.changeResult()
+                    searchDrawer.animateClose()
                 }
             }
         })
@@ -406,5 +414,47 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
     companion object{
         var MY_PERMISSION_STORAGE = 1000
+    }
+}
+
+class MarkerEventListener(val context: Context) : MapView.POIItemEventListener{
+    override fun onPOIItemSelected(p0: MapView?, p1: MapPOIItem?) {
+        //
+    }
+
+    override fun onCalloutBalloonOfPOIItemTouched(p0: MapView?, p1: MapPOIItem?) {
+        //
+    }
+
+    override fun onCalloutBalloonOfPOIItemTouched(
+        mapView: MapView?,
+        poiItem: MapPOIItem?,
+        buttonType: MapPOIItem.CalloutBalloonButtonType?
+    ) {
+        // TODO
+        val toilet = poiItem?.userObject as Toilet
+        val intent = Intent(context, ToiletInfoActivity::class.java)
+        intent.putExtra("id", toilet.id)
+        intent.putExtra("toiletName", toilet.toiletName)
+        intent.putExtra("tel", toilet.tel)
+        intent.putExtra("openTime", toilet.openTime)
+        intent.putExtra("mw", toilet.mw)
+        intent.putExtra("m1", toilet.m1)
+        intent.putExtra("m2", toilet.m2)
+        intent.putExtra("m3", toilet.m3)
+        intent.putExtra("m4", toilet.m4)
+        intent.putExtra("m5", toilet.m5)
+        intent.putExtra("m6", toilet.m6)
+        intent.putExtra("w1", toilet.w1)
+        intent.putExtra("w2", toilet.w2)
+        intent.putExtra("w3", toilet.w3)
+        intent.putExtra("distance", toilet.distance)
+        intent.putExtra("score_avg", toilet.score_avg)
+
+        startActivity(context, intent, null)
+    }
+
+    override fun onDraggablePOIItemMoved(p0: MapView?, p1: MapPOIItem?, p2: MapPoint?) {
+        //
     }
 }

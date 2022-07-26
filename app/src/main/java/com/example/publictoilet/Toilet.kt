@@ -1,6 +1,7 @@
 package com.example.publictoilet
 
 data class Toilet (
+    val id : String,
     val toiletName : String,
     val tel : String,
     val openTime : String,
