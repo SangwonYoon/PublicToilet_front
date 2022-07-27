@@ -120,6 +120,9 @@ class ToiletReviewActivity : AppCompatActivity() {
         getReviews(id!!.toInt())
 
         closeButton.setOnClickListener {
+            val intent = Intent()
+            intent.putExtra("newAvgScore", score.text.toString())
+            setResult(RESULT_OK, intent)
             finish()
         }
 
@@ -276,7 +279,9 @@ class ToiletReviewActivity : AppCompatActivity() {
                                 "리뷰가 성공적으로 등록되었습니다.",
                                 Toast.LENGTH_SHORT
                             ).show()
+                            refreshScore(spinner.selectedItem.toString().toDouble())
                         }
+                        getReviews(toiletId) // Recycler View refresh
                     } else{
                         Log.d("connection error", "toiletId : $toiletId / response code : ${response.code()} / review post 도중 인터넷 연결 불안정")
                         runOnUiThread{
@@ -290,6 +295,12 @@ class ToiletReviewActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+
+    private fun refreshScore(newScore : Double){
+        val tempAvgScore = score.text.toString()
+        val newAvgScore = round((tempAvgScore.toDouble() * reviewList.size + newScore) / (reviewList.size + 1) * 10) / 10
+        score.text = newAvgScore.toString()
     }
 
     /**
