@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:text="검색 범위: "
-        android:textColor="#000000"
+        android:textColor="#EAEAEA"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/spinner"
         app:layout_constraintStart_toStartOf="@id/spinner" />
@@ -32,9 +32,9 @@
         android:layout_marginStart="100dp"
         android:layout_marginEnd="100dp"
         android:layout_marginBottom="30dp"
-        android:background="@color/black"
+        android:background="#EAEAEA"
         android:text="검색"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
