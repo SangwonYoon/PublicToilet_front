@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
         findViewById(R.id.change_mode_button)
     }
 
-    private val currentLocationButton : Button by lazy{
+    private val currentLocationButton : ImageButton by lazy{
         findViewById(R.id.current_location_button)
     }
 
@@ -123,8 +123,8 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
     override fun onItemClicked(position: Int) {
         val targetMarker = mapView.findPOIItemByTag(position)
         mapView.selectPOIItem(targetMarker, true) // 타겟 마커 선택
-        //val coordinate = targetMarker.mapPoint
-        //mapView.setMapCenterPoint(coordinate, true)
+        val coordinate = targetMarker.mapPoint
+        mapView.setMapCenterPoint(coordinate, true)
         mapView.setZoomLevel(1,true)
         //searchDrawer.animateClose()
     }

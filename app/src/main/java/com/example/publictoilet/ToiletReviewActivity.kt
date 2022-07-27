@@ -88,6 +88,8 @@ class ToiletReviewActivity : AppCompatActivity() {
         findViewById(R.id.post_button)
     }
 
+    private var scoreAvgData = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_toilet_review)
@@ -109,7 +111,7 @@ class ToiletReviewActivity : AppCompatActivity() {
         val toiletNameData = intent.getStringExtra("toiletName")
         toiletName.text = toiletNameData
 
-        val scoreAvgData = intent.getStringExtra("score_avg")
+        scoreAvgData = intent.getStringExtra("score_avg")!!
         if(scoreAvgData == "null"){
             score.text = "평점 : 0.0"
         } else{
@@ -298,7 +300,7 @@ class ToiletReviewActivity : AppCompatActivity() {
     }
 
     private fun refreshScore(newScore : Double){
-        val tempAvgScore = score.text.toString()
+        val tempAvgScore = scoreAvgData
         val newAvgScore = round((tempAvgScore.toDouble() * reviewList.size + newScore) / (reviewList.size + 1) * 10) / 10
         score.text = newAvgScore.toString()
     }

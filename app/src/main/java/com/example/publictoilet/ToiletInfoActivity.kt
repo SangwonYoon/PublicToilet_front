@@ -190,7 +190,7 @@ class ToiletInfoActivity : AppCompatActivity() {
         if(requestCode == REVIEW_REQUEST_CODE){
             if(resultCode == RESULT_OK){
                 val newAvgScore = data?.getStringExtra("newAvgScore")
-                score.text = newAvgScore
+                score.text = "평점 : $newAvgScore"
                 if(commentButton.text == WRITE_NEW_COMMENT && newAvgScore != "0.0"){ // 첫 코멘트가 작성되었을 경우, 버튼의 텍스트 값을 "첫 코멘트 작성하기" -> "코멘트 보기"로 수정
                     commentButton.text = "코멘트 보기"
                 }
