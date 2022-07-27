@@ -161,6 +161,7 @@
         android:inputType="text"
         android:maxLength="20"
         android:paddingStart="15dp"
+        android:background="@drawable/edit_text_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/post_button"
         app:layout_constraintStart_toStartOf="parent" />
