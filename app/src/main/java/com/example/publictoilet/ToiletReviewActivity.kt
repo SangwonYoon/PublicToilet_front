@@ -16,6 +16,7 @@ import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
+import kotlin.math.round
 
 class ToiletReviewActivity : AppCompatActivity() {
 
@@ -112,7 +113,7 @@ class ToiletReviewActivity : AppCompatActivity() {
         if(scoreAvgData == "null"){
             score.text = "평점 : 0.0"
         } else{
-            score.text = "평점 : $scoreAvgData"
+            score.text = "평점 : ${round(scoreAvgData!!.toDouble() * 10) / 10}" // 소수점 한자리까지 반올림
             initStars(scoreAvgData!!, mutableListOf(s1,s2,s3,s4,s5))
         }
 

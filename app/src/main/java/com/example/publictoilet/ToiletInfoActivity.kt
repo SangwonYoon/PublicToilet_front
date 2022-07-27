@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.isVisible
 import org.w3c.dom.Text
 import kotlin.math.floor
+import kotlin.math.round
 
 class ToiletInfoActivity : AppCompatActivity() {
 
@@ -117,7 +118,7 @@ class ToiletInfoActivity : AppCompatActivity() {
             score.text = "평점 : 0.0"
             commentButton.text = "첫 코멘트 작성하기"
         } else {
-            score.text = "평점 : $scoreAvgData"
+            score.text = "평점 : ${round(scoreAvgData!!.toDouble() * 10) / 10}" // 소수점 한자리까지 반올림
             initStars(scoreAvgData!!)
         }
 
