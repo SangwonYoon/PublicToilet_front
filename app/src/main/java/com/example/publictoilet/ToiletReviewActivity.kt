@@ -88,6 +88,8 @@ class ToiletReviewActivity : AppCompatActivity() {
         findViewById(R.id.post_button)
     }
 
+    private var scoreAvgData = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_toilet_review)
@@ -109,7 +111,7 @@ class ToiletReviewActivity : AppCompatActivity() {
         val toiletNameData = intent.getStringExtra("toiletName")
         toiletName.text = toiletNameData
 
-        val scoreAvgData = intent.getStringExtra("score_avg")
+        scoreAvgData = intent.getStringExtra("score_avg")!!
         if(scoreAvgData == "null"){
             score.text = "평점 : 0.0"
         } else{
@@ -120,6 +122,9 @@ class ToiletReviewActivity : AppCompatActivity() {
         getReviews(id!!.toInt())
 
         closeButton.setOnClickListener {
+            val intent = Intent()
+            intent.putExtra("newAvgScore", score.text.toString())
+            setResult(RESULT_OK, intent)
             finish()
         }
 
@@ -276,7 +281,9 @@ class ToiletReviewActivity : AppCompatActivity() {
                                 "리뷰가 성공적으로 등록되었습니다.",
                                 Toast.LENGTH_SHORT
                             ).show()
+                            refreshScore(spinner.selectedItem.toString().toDouble())
                         }
+                        getReviews(toiletId) // Recycler View refresh
                     } else{
                         Log.d("connection error", "toiletId : $toiletId / response code : ${response.code()} / review post 도중 인터넷 연결 불안정")
                         runOnUiThread{
@@ -290,6 +297,12 @@ class ToiletReviewActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+
+    private fun refreshScore(newScore : Double){
+        val tempAvgScore = scoreAvgData
+        val newAvgScore = round((tempAvgScore.toDouble() * reviewList.size + newScore) / (reviewList.size + 1) * 10) / 10
+        score.text = newAvgScore.toString()
     }
 
     /**

@@ -116,7 +116,7 @@ class ToiletInfoActivity : AppCompatActivity() {
         val scoreAvgData = intent.getStringExtra("score_avg")
         if(scoreAvgData == "null"){
             score.text = "평점 : 0.0"
-            commentButton.text = "첫 코멘트 작성하기"
+            commentButton.text = WRITE_NEW_COMMENT
         } else {
             score.text = "평점 : ${round(scoreAvgData!!.toDouble() * 10) / 10}" // 소수점 한자리까지 반올림
             initStars(scoreAvgData!!)
@@ -128,7 +128,7 @@ class ToiletInfoActivity : AppCompatActivity() {
             intent.putExtra("id", id)
             intent.putExtra("toiletName", toiletNameData)
             intent.putExtra("score_avg", scoreAvgData)
-            startActivity(intent)
+            startActivityForResult(intent, REVIEW_REQUEST_CODE)
         }
 
         val openTimeData = intent.getStringExtra("openTime")
@@ -182,6 +182,23 @@ class ToiletInfoActivity : AppCompatActivity() {
     }
 
     /**
+     * 화장실 리뷰 페이지에서 사용자가 리뷰를 작성해서 평점 평균값이 변경되었을 경우, 변경된 값을 받아오는 함수
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == REVIEW_REQUEST_CODE){
+            if(resultCode == RESULT_OK){
+                val newAvgScore = data?.getStringExtra("newAvgScore")
+                score.text = "평점 : $newAvgScore"
+                if(commentButton.text == WRITE_NEW_COMMENT && newAvgScore != "0.0"){ // 첫 코멘트가 작성되었을 경우, 버튼의 텍스트 값을 "첫 코멘트 작성하기" -> "코멘트 보기"로 수정
+                    commentButton.text = "코멘트 보기"
+                }
+            }
+        }
+    }
+
+    /**
      * 평점 평균 값에 맞게 별 모양을 바꿔주는 함수
      * @param score 평점 평균 값
      */
@@ -192,5 +209,10 @@ class ToiletInfoActivity : AppCompatActivity() {
         if(score.toDouble() > score.toDouble().toInt()){
             stars[score.toDouble().toInt()].setImageResource(R.drawable.half_star_icon)
         }
+    }
+
+    companion object{
+        const val REVIEW_REQUEST_CODE = 1000
+        const val WRITE_NEW_COMMENT = "첫 코멘트 작성하기"
     }
 }

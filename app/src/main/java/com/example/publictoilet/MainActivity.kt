@@ -47,13 +47,13 @@ import java.security.NoSuchAlgorithmException
 // 모드 선택 기능 (자유시점 모드, 트래킹 모드, 나침반 모드)
 // 검색하면 지도에 검색 반경 내 공중 화장실 표시 // 검색 버튼 클릭 후 sliding drawer 닫히는 기능 추가 -> animateClose()
 // 검색 결과 탭을 누르면 RecyclerView에 가까운 거리 순으로 공중화장실 정렬
-// 검색 결과 item 클릭 시 해당 마커를 중심으로 지도 이동 // 줌인 기능도 추가 -> mapView.setZoomLevel() // TODO 마커 선택되도록
+// 검색 결과 item 클릭 시 해당 마커를 중심으로 지도 이동 // 줌인 기능도 추가 -> mapView.setZoomLevel() // 해당 마커가 선택되도록 구현
 // 마커의 말풍선 클릭 시 해당 화장실 정보 화면으로 이동 -> getUserObject()로 해당 마커와 연관된 Toilet 객체 가져오기
 // 리뷰 작성 화면 기능 구현
 // sliding drawer 높이 조절
 // TODO sliding drawer 디자인 커스텀하기
 // 화장실 리뷰 화면 recycler view 안보이는 버그 수정
-// TODO 리뷰 등록 후 refresh
+// 리뷰 등록 후 refresh
 // 평점 소수점 한자리까지만 잘라서 보여주기
 
 class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListener, SearchResultAdapter.OnItemClickedListener {
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
         findViewById(R.id.change_mode_button)
     }
 
-    private val currentLocationButton : Button by lazy{
+    private val currentLocationButton : ImageButton by lazy{
         findViewById(R.id.current_location_button)
     }
 
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
     private val resultFragment = ResultFragment()
 
-    private val markerEventListener = MarkerEventListener(this)
+    private val markerEventListener = MarkerEventListener(this) // onCreate에서 객체 생성하면 안됨
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,6 +122,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
      */
     override fun onItemClicked(position: Int) {
         val targetMarker = mapView.findPOIItemByTag(position)
+        mapView.selectPOIItem(targetMarker, true) // 타겟 마커 선택
         val coordinate = targetMarker.mapPoint
         mapView.setMapCenterPoint(coordinate, true)
         mapView.setZoomLevel(1,true)
@@ -134,24 +135,24 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
      */
     @SuppressLint("MissingPermission")
     override fun onRangeChanged(range: Int) {
-//        mapView.setCurrentLocationRadius(range)
-//        mapView.setCurrentLocationRadiusStrokeColor(Color.argb(128,0,0,0))
-//        mapView.setCurrentLocationRadiusFillColor(Color.argb(128, 211, 211, 211))
+        mapView.setCurrentLocationRadius(range)
+        mapView.setCurrentLocationRadiusStrokeColor(Color.argb(128,0,0,0))
+        mapView.setCurrentLocationRadiusFillColor(Color.argb(128, 211, 211, 211))
 
-        mapView.removeAllCircles() // 이전 검색 범위 삭제
-
-        val locationManager : LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val currentLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-        val searchRange = MapCircle( // 지도에 원으로 표시할 검색 범위
-            MapPoint.mapPointWithGeoCoord(
-                currentLoc!!.latitude,
-                currentLoc.longitude
-            ), // 원의 중심
-            range, // 반지름
-            Color.argb(128,0,0,0), // 테두리 색깔
-            Color.argb(128, 211, 211, 211) // 내부 색깔
-        )
-        mapView.addCircle(searchRange)
+//        mapView.removeAllCircles() // 이전 검색 범위 삭제
+//
+//        val locationManager : LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//        val currentLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+//        val searchRange = MapCircle( // 지도에 원으로 표시할 검색 범위
+//            MapPoint.mapPointWithGeoCoord(
+//                currentLoc!!.latitude,
+//                currentLoc.longitude
+//            ), // 원의 중심
+//            range, // 반지름
+//            Color.argb(128,0,0,0), // 테두리 색깔
+//            Color.argb(128, 211, 211, 211) // 내부 색깔
+//        )
+//        mapView.addCircle(searchRange)
     }
 
     @SuppressLint("MissingPermission")
@@ -312,6 +313,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
      * @param longitude 마커의 위도
      * @param tagNo 마커의 식별 번호
      * @param tagName 마커의 이름
+     * @return 생성된 마커 객체
      */
     private fun makeMarker(latitude : Double, longitude : Double, tagNo : Int, tagName : String) : MapPOIItem{
         val marker = MapPOIItem()
@@ -347,7 +349,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
                     .create()
                     .show()
             } else {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), MY_PERMISSION_STORAGE)
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), MY_PERMISSION)
             }
         }
     }
@@ -358,7 +360,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
     override fun onRequestPermissionsResult(requestCode:Int, @NonNull permissions:Array<String>, @NonNull grantResults:IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            MY_PERMISSION_STORAGE -> for (i in grantResults.indices)
+            MY_PERMISSION -> for (i in grantResults.indices)
             {
                 // grantResults[] : 허용된 권한은 0, 거부한 권한은 -1
                 if (grantResults[i] < 0)
@@ -424,7 +426,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
     }
 
     companion object{
-        var MY_PERMISSION_STORAGE = 1000
+        var MY_PERMISSION = 1000
     }
 }
 
