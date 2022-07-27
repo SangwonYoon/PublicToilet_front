@@ -47,7 +47,7 @@ import java.security.NoSuchAlgorithmException
 // 모드 선택 기능 (자유시점 모드, 트래킹 모드, 나침반 모드)
 // 검색하면 지도에 검색 반경 내 공중 화장실 표시 // 검색 버튼 클릭 후 sliding drawer 닫히는 기능 추가 -> animateClose()
 // 검색 결과 탭을 누르면 RecyclerView에 가까운 거리 순으로 공중화장실 정렬
-// 검색 결과 item 클릭 시 해당 마커를 중심으로 지도 이동 // 줌인 기능도 추가 -> mapView.setZoomLevel() // TODO 마커 선택되도록
+// 검색 결과 item 클릭 시 해당 마커를 중심으로 지도 이동 // 줌인 기능도 추가 -> mapView.setZoomLevel() // 해당 마커가 선택되도록 구현
 // 마커의 말풍선 클릭 시 해당 화장실 정보 화면으로 이동 -> getUserObject()로 해당 마커와 연관된 Toilet 객체 가져오기
 // 리뷰 작성 화면 기능 구현
 // sliding drawer 높이 조절
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
 
     private val resultFragment = ResultFragment()
 
-    private val markerEventListener = MarkerEventListener(this)
+    private val markerEventListener = MarkerEventListener(this) // onCreate에서 객체 생성하면 안됨
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,8 +122,9 @@ class MainActivity : AppCompatActivity(), SearchToiletFragment.OnDataPassListene
      */
     override fun onItemClicked(position: Int) {
         val targetMarker = mapView.findPOIItemByTag(position)
-        val coordinate = targetMarker.mapPoint
-        mapView.setMapCenterPoint(coordinate, true)
+        mapView.selectPOIItem(targetMarker, true) // 타겟 마커 선택
+        //val coordinate = targetMarker.mapPoint
+        //mapView.setMapCenterPoint(coordinate, true)
         mapView.setZoomLevel(1,true)
         //searchDrawer.animateClose()
     }
