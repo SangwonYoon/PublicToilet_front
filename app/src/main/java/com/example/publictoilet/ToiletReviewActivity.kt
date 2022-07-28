@@ -113,10 +113,10 @@ class ToiletReviewActivity : AppCompatActivity() {
 
         scoreAvgData = intent.getStringExtra("score_avg")!!
         if(scoreAvgData == "null"){
-            score.text = "평점 : 0.0"
+            score.text = "0.0"
         } else{
-            score.text = "평점 : ${round(scoreAvgData!!.toDouble() * 10) / 10}" // 소수점 한자리까지 반올림
-            initStars(scoreAvgData!!, mutableListOf(s1,s2,s3,s4,s5))
+            score.text = "${round(scoreAvgData.toDouble() * 10) / 10}" // 소수점 한자리까지 반올림
+            initStars(scoreAvgData, mutableListOf(s1,s2,s3,s4,s5))
         }
 
         getReviews(id!!.toInt())
@@ -302,7 +302,7 @@ class ToiletReviewActivity : AppCompatActivity() {
     private fun refreshScore(newScore : Double){
         val tempAvgScore = scoreAvgData
         val newAvgScore = round((tempAvgScore.toDouble() * reviewList.size + newScore) / (reviewList.size + 1) * 10) / 10
-        score.text = newAvgScore.toString()
+        score.text = "$newAvgScore"
     }
 
     /**
